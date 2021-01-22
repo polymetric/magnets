@@ -7,7 +7,7 @@ class ForceArrow {
   }
   
   public void draw() {
-    stroke(224);
+    stroke(224, 32, 32);
     strokeWeight(1);
     
     // line

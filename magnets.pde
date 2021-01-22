@@ -1,10 +1,12 @@
 ArrayList<Magnet> magnets = new ArrayList<Magnet>();
 
+float frictionCoefficient = 0.97;
+
 void spawnMagnets() {
   magnets.clear();
   
   magnets.add(new Magnet(width/2, height/2, 1));
-  magnets.get(0).fixed = true;
+  //magnets.get(0).fixed = true;
   magnets.add(new Magnet(width/2, 150, 1));
 }
 
@@ -36,7 +38,9 @@ void draw() {
   }
   
   //magnets.get(0).angle += 0.01;
-  magnets.get(0).angle = -atan2(mouseX-width/2, mouseY-height/2);
+  magnets.get(0).angle = -atan2(mouseX-magnets.get(0).pos.x, mouseY-magnets.get(0).pos.y);
+  
+  System.out.printf("rotor angle: %12.6f \t stator angle: %12.6f\n", magnets.get(0).angle, magnets.get(1).angle);
   
   //magnets.get(0).pos.x = 100 * sin(temp) + 250;
   //magnets.get(0).pos.y = 100 * cos(temp) + 250;

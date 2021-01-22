@@ -23,6 +23,7 @@ class Magnet {
   public void tick() {
     if (!fixed) {
       pos.add(vel);
+      vel.mult(frictionCoefficient);
     }
   }
   
@@ -37,6 +38,10 @@ class Magnet {
     a.add(c);
     b.sub(c);
     line(a.x, a.y, b.x, b.y);
+    stroke(224, 32, 32);
+    point(a.x, a.y);
+    stroke(32, 32, 224);
+    point(b.x, b.y);
   }
   
   public void attract(Magnet other) {
