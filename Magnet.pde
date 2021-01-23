@@ -45,17 +45,30 @@ class Magnet {
   }
   
   public void attract(Magnet other) {
-    PVector diff = other.pos.copy();
-    float dist = pos.dist(other.pos);
-    diff.sub(pos);
-    diff.normalize();
-    diff.mult(cos(angle) * cos(other.angle) * strength * other.strength);
-    diff.div(dist * dist);
-    //diff.div(1000);
-    diff.mult(1000);
+    arrow.enabled = this.enabled;
+    if (!enabled) return;
     
-    vel.add(diff);
-    arrow.origin = pos.copy();
-    arrow.force = diff.copy();
+    if (!fixed) {
+      PVector diff = other.pos.copy();
+      float dist = pos.dist(other.pos);
+      diff.sub(pos);
+      diff.normalize();
+      diff.mult(cos(angle) * cos(other.angle) * strength * other.strength);
+      diff.div(dist * dist);
+      //diff.div(1000);
+      diff.mult(1000);
+      
+      vel.add(diff);
+      arrow.origin = pos.copy();
+      arrow.force = vel.copy();
+    } else {
+      PVector arrowvec = new PVector();
+      arrowvec.x = sin(angle) * strength;
+      arrowvec.y = -cos(angle) * strength;
+      arrowvec.mult(2);
+      
+      arrow.origin = pos.copy();
+      arrow.force = arrowvec.copy();
+    }
   }
 }

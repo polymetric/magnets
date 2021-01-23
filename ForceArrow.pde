@@ -1,4 +1,5 @@
 class ForceArrow {
+  boolean enabled = true;
   PVector origin;
   PVector force;
   
@@ -7,6 +8,8 @@ class ForceArrow {
   }
   
   public void draw() {
+    if (!enabled) return;
+    
     stroke(224, 32, 32);
     strokeWeight(1);
     
@@ -15,7 +18,7 @@ class ForceArrow {
     a = origin.copy();
     b = origin.copy();
     c = force.copy();
-    c.mult(800);
+    c.mult(25);
     b.add(c);
     line(a.x, a.y, b.x, b.y);
     
