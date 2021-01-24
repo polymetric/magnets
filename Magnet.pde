@@ -29,14 +29,6 @@ class Magnet {
   }
   
   public void tick() {
-    if (!fixed) {
-      pos.add(vel);
-      vel.mult(frictionCoefficient);
-      
-      arrow.origin = pos.copy();
-      arrow.force = vel.copy();
-    }
-    
     if (constrainRotation) {
       // constrain distance
       PVector radiusLine = pos.copy();
@@ -53,7 +45,23 @@ class Magnet {
       line(width/2, height/2, pos.x, pos.y);
       
       // always face center
+      float prevAngle = angle;
       angle = -atan2(pos.x-width/2, pos.y-height/2);
+      
+      vel.rotate(angle - prevAngle);
+      
+      // remove outward velocity
+      vel.rotate(-angle);
+      vel.y = 0;
+      vel.rotate(angle);
+    }
+    
+    if (!fixed) {
+      arrow.origin = pos.copy();
+      arrow.force = vel.copy();
+      
+      pos.add(vel);
+      vel.mult(frictionCoefficient);
     }
   }
   
@@ -84,11 +92,18 @@ class Magnet {
       diff.sub(pos);
       diff.normalize();
       diff.mult(cos(angle) * cos(other.angle) * strength * other.strength);
-      //diff.div(dist * dist);
+      diff.div(dist * dist);
       //diff.div(1000);
-      diff.mult(100);
+      diff.mult(1000);
       
-      vel.add(diff);
+      for (Magnet m : rotorMagnets) {
+        PVector diff_rot = diff.copy();
+        diff_rot.rotate(m.angle - this.angle);
+        
+        m.vel.add(diff_rot);
+        //System.out.printf("%s got velocity %6.6f %6.6f applied by %s\n", m, diff.x, diff.y, other);
+      }
+      //vel.add(diff);
     } else {
       PVector arrowvec = new PVector();
       arrowvec.x = sin(angle) * strength;

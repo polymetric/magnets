@@ -1,14 +1,18 @@
 final float PI_23RDS = PI * 2 / 3;
 
-final int statorPoles = 3;
+final int statorPoles = 1;
 final int rotorPoles = 2;
 
-ArrayList<Magnet> magnets = new ArrayList<Magnet>();
+long iter = 0;
 
-float frictionCoefficient = 1.00;
+ArrayList<Magnet> magnets = new ArrayList<Magnet>();
+ArrayList<Magnet> rotorMagnets = new ArrayList<Magnet>();
+
+float frictionCoefficient = 0.90;
 
 void spawnMagnets() {
   magnets.clear();
+  rotorMagnets.clear();
   
   //magnets.add(new Magnet(width/2, height/2 - 50, 1));
   //magnets.get(0).fixed = true;
@@ -25,15 +29,19 @@ void spawnMagnets() {
   }
   
   for (int i = 0; i < rotorPoles; i++) {
-    Magnet m = new Magnet(0, 0, 10);
-    m.angle = PI * 2 / rotorPoles * i + PI;
+    Magnet m = new Magnet(0, 0, 25);
+    m.angle = PI * 2 / rotorPoles * i + PI / 4;
     m.pos.x = sin(m.angle) * 100 + width/2;
     m.pos.y = -cos(m.angle) * 100 + height/2;
     m.enabled = true;
     m.fixed = false;
     m.constrainRotation = true;
     magnets.add(m);
+    rotorMagnets.add(m);
   }
+  
+  //rotorMagnets.get(0).vel.x = 1;
+  //rotorMagnets.get(1).vel.x = -1;
   
   //m = new Magnet(width/2, height/2 + 50, 100);
   //m.enabled = true;
@@ -90,32 +98,43 @@ void draw() {
   //System.out.printf("rotor angle: %12.6f \t stator angle: %12.6f\n", magnets.get(0).angle, magnets.get(1).angle);
   
   for (int i = 0; i < statorPoles; i += 3) {
-    //magnets.get(i).strength = sin(statorfield);
-    //magnets.get(i+1).strength = sin(statorfield + PI_23RDS);
-    //magnets.get(i+2).strength = sin(statorfield + PI_23RDS * 2);
+    magnets.get(i).strength = sin(statorfield);
+    magnets.get(i+1).strength = sin(statorfield + PI_23RDS);
+    magnets.get(i+2).strength = sin(statorfield + PI_23RDS * 2);
   }
   
-  switch (temptest) {
-    case 0:
-      magnets.get(0).strength = 1;
-      magnets.get(1).strength = 0;
-      magnets.get(2).strength = 0;
-      break;
-    case 1:
-      magnets.get(0).strength = 0;
-      magnets.get(1).strength = 1;
-      magnets.get(2).strength = 0;
-      break;
-    case 2:
-      magnets.get(0).strength = 0;
-      magnets.get(1).strength = 0;
-      magnets.get(2).strength = 1;
-      break;
-  }
+  //switch (temptest) {
+  //  case 0:
+  //    for (int i = 0; i < statorPoles; i += 3) {
+  //      magnets.get(i).strength = 1;
+  //      magnets.get(i+1).strength = 0;
+  //      magnets.get(i+2).strength = 0;
+  //    }
+  //    break;
+  //  case 1:
+  //    for (int i = 0; i < statorPoles; i += 3) {
+  //      magnets.get(i).strength = 0;
+  //      magnets.get(i+1).strength = 1;
+  //      magnets.get(i+2).strength = 0;
+  //    }
+  //    break;
+  //  case 2:
+  //    for (int i = 0; i < statorPoles; i += 3) {
+  //      magnets.get(i).strength = 0;
+  //      magnets.get(i+1).strength = 0;
+  //      magnets.get(i+2).strength = 1;
+  //    }
+  //    break;
+  //}
   
-  statorfield += 0.1;
+  // debug temp
+  System.out.printf("%6.6f %6.6f %6.6f %6.6f %6.6f\n", rotorMagnets.get(0).pos.x, rotorMagnets.get(0).pos.y, rotorMagnets.get(0).vel.x, rotorMagnets.get(0).vel.y, rotorMagnets.get(0).angle);
+  
+  statorfield += 0.01;
   
   //magnets.get(0).pos.x = 100 * sin(temp) + 250;
   //magnets.get(0).pos.y = 100 * cos(temp) + 250;
   //temp += 0.01;
+  
+  iter += 1;
 }
