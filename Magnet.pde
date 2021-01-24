@@ -6,7 +6,10 @@ class Magnet {
   PVector pos;
   PVector vel;
   
-  ForceArrow arrow = new ForceArrow();
+  ForceArrow arrow;
+  
+  boolean constrainRotation;
+  float constrainRadius;
   
   public Magnet(float x, float y, float strength) {
     enabled = true;
@@ -18,12 +21,39 @@ class Magnet {
     vel.x = 0;
     vel.y = 0;
     this.strength = strength;
+    
+    arrow = new ForceArrow();
+    
+    constrainRotation = false;
+    constrainRadius = 100;
   }
   
   public void tick() {
     if (!fixed) {
       pos.add(vel);
       vel.mult(frictionCoefficient);
+      
+      arrow.origin = pos.copy();
+      arrow.force = vel.copy();
+    }
+    
+    if (constrainRotation) {
+      // constrain distance
+      PVector radiusLine = pos.copy();
+      
+      radiusLine.sub(width/2, height/2);
+      radiusLine.normalize();
+      radiusLine.mult(constrainRadius);
+      
+      pos.x = width/2 + radiusLine.x;
+      pos.y = height/2 + radiusLine.y;
+      
+      stroke(232);
+      strokeWeight(1);
+      line(width/2, height/2, pos.x, pos.y);
+      
+      // always face center
+      angle = -atan2(pos.x-width/2, pos.y-height/2);
     }
   }
   
@@ -54,13 +84,11 @@ class Magnet {
       diff.sub(pos);
       diff.normalize();
       diff.mult(cos(angle) * cos(other.angle) * strength * other.strength);
-      diff.div(dist * dist);
+      //diff.div(dist * dist);
       //diff.div(1000);
-      diff.mult(1000);
+      diff.mult(100);
       
       vel.add(diff);
-      arrow.origin = pos.copy();
-      arrow.force = vel.copy();
     } else {
       PVector arrowvec = new PVector();
       arrowvec.x = sin(angle) * strength;
