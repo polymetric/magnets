@@ -1,6 +1,6 @@
 final float PI_23RDS = PI * 2 / 3;
 
-final int statorPoles = 1;
+final int statorPoles = 6;
 final int rotorPoles = 2;
 
 long iter = 0;
@@ -29,8 +29,8 @@ void spawnMagnets() {
   }
   
   for (int i = 0; i < rotorPoles; i++) {
-    Magnet m = new Magnet(0, 0, 25);
-    m.angle = PI * 2 / rotorPoles * i + PI / 4;
+    Magnet m = new Magnet(0, 0, 10);
+    m.angle = PI * 2 / rotorPoles * i;
     m.pos.x = sin(m.angle) * 100 + width/2;
     m.pos.y = -cos(m.angle) * 100 + height/2;
     m.enabled = true;
@@ -75,6 +75,7 @@ void keyPressed() {
 }
 
 float statorfield = 0;
+float rotorpos = 0;
 
 int temptest = 0;
 
@@ -97,10 +98,15 @@ void draw() {
   
   //System.out.printf("rotor angle: %12.6f \t stator angle: %12.6f\n", magnets.get(0).angle, magnets.get(1).angle);
   
+  rotorpos = rotorMagnets.get(0).angle / 2 + (PI / 2);
+  
   for (int i = 0; i < statorPoles; i += 3) {
-    magnets.get(i).strength = sin(statorfield);
-    magnets.get(i+1).strength = sin(statorfield + PI_23RDS);
-    magnets.get(i+2).strength = sin(statorfield + PI_23RDS * 2);
+    //magnets.get(i).strength = sin(statorfield);
+    //magnets.get(i+1).strength = sin(statorfield + PI_23RDS);
+    //magnets.get(i+2).strength = sin(statorfield + PI_23RDS * 2);
+    magnets.get(i).strength = sin(rotorpos);
+    magnets.get(i+1).strength = sin(rotorpos + PI_23RDS);
+    magnets.get(i+2).strength = sin(rotorpos + PI_23RDS * 2);
   }
   
   //switch (temptest) {
